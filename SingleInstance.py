@@ -17,6 +17,6 @@ class SingleInstance:
         except socket.error:
             raise SingleInstanceException("Another instance is already running")
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_value, traceback):
         if self.lock_socket:
             self.lock_socket.close()

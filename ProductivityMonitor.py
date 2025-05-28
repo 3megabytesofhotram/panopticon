@@ -80,25 +80,19 @@ class ProductivityMonitor:
         start_time = time.time()
 
         while self.running:
-            #try:
-                image = self.take_screenshot()
-                pixelated = self.pixelate_image(image)
-                self.save_screenshot(pixelated)
-                screenshots_taken += 1
+            image = self.take_screenshot()
+            pixelated = self.pixelate_image(image)
+            self.save_screenshot(pixelated)
+            screenshots_taken += 1
 
-                elapsed_time = time.time() - start_time
-                rate = screenshots_taken / (elapsed_time / 3600)
-                print(f"Screenshots taken: {screenshots_taken} (Rate: {rate:.1f}/hour)")
+            elapsed_time = time.time() - start_time
+            rate = screenshots_taken / (elapsed_time / 3600)
+            print(f"Screenshots taken: {screenshots_taken} (Rate: {rate:.1f}/hour)")
 
-                wait_time = random.randint(self.interval_min, self.interval_max)
-                if self.stop_event.wait(timeout=wait_time):
-                    break
+            wait_time = random.randint(self.interval_min, self.interval_max)
+            if self.stop_event.wait(timeout=wait_time):
+                break
 
-                """except Exception as e:
-                print(f"Error during screenshot: {e}")
-                if self.stop_event.wait(timeout=10):
-                    break"""
-                
     def get_save_path(self):
         return pathlib.Path(self.save_dir) / self.bin_day
 

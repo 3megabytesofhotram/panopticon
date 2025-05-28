@@ -165,7 +165,7 @@ class PanopticonGUI(ctk.CTk):
         ctk.CTkButton(button_frame, text="Reset to Default", font=("", int(14 * self.font_scale)), command=self.reset_settings).pack(side="left", padx=(5, 0), expand=True)
     
     def reload_visualizer_frame(self):
-      print("Reloading visualizer frame...")
+      print("\nReloading visualizer frame...")
       if self.visualizer_frame:
           self.visualizer_frame.refresh()
       else:
@@ -173,8 +173,9 @@ class PanopticonGUI(ctk.CTk):
         print("No visualizer frame found, recreating...")
         json_path = self.monitor.get_json_path()  # Adjust path logic if needed
         save_path = self.monitor.get_save_path()
-        self.visualizer_frame = JsonVisualizerFrame(self.right_frame, self.classify_screenshot, json_path=json_path, save_path=save_path, font_scale=self.font_scale)
-        self.visualizer_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        vf_margin = 10
+        self.visualizer_frame = JsonVisualizerFrame(self.right_frame, self.classify_screenshot, json_path=json_path, save_path=save_path, margin=vf_margin, font_scale=self.font_scale)
+        self.visualizer_frame.pack(fill="both", expand=True, padx=vf_margin, pady=vf_margin)
 
     def toggle_monitoring(self):
         if self.monitor.running:
@@ -234,13 +235,14 @@ class PanopticonGUI(ctk.CTk):
                 print(f"Error updating classification: {e}")
         else:
             print(f"No action taken for screenshot: {image_path}")
+            return None # response is None
         
         screenshot_entry["classification"] = response.lower()
 
         if new and not (response == "X"):
           # Reload the visualizer frame entirely if # of ss's changed
           if self.visualizer_frame:
-              self.visualizer_frame.add_screenshot_button(image_path, screenshot_entry, time_label)
+              self.visualizer_frame.add_screenshot_button(image_path, screenshot_entry)
           else:
               self.reload_visualizer_frame()
         
@@ -262,6 +264,8 @@ class PanopticonGUI(ctk.CTk):
             json_path = self.monitor.get_json_path()
             save_path = self.monitor.get_save_path()
             self.visualizer_frame.update_json_path(json_path, save_path)
+        else:
+            self.reload_visualizer_frame()
 
         print(f"Recording day set to {new_day}")
 
